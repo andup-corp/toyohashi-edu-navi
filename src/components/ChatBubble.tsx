@@ -9,6 +9,7 @@ type Props = {
 
 export default function ChatBubble({ message, animationDelay = 0 }: Props) {
   const isBot = message.type === "bot";
+  const isUrgent = message.urgent;
 
   return (
     <div
@@ -20,17 +21,19 @@ export default function ChatBubble({ message, animationDelay = 0 }: Props) {
       {/* Avatar */}
       <div
         className={`w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 ${
-          isBot ? "bg-blue-100" : "bg-slate-200"
+          isUrgent ? "bg-red-100" : isBot ? "bg-blue-100" : "bg-slate-200"
         }`}
         aria-hidden="true"
       >
-        {isBot ? "🤖" : "👤"}
+        {isUrgent ? "🆘" : isBot ? "🤖" : "👤"}
       </div>
 
       {/* Bubble */}
       <div
-        className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
-          isBot
+        className={`max-w-[80%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+          isUrgent
+            ? "bg-red-50 border border-red-200 text-red-900 rounded-tl-sm font-medium"
+            : isBot
             ? "bg-white text-gray-800 rounded-tl-sm"
             : "bg-blue-100 text-gray-800 rounded-tr-sm"
         }`}

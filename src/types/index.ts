@@ -2,6 +2,7 @@ export type Question = {
   id: string;
   text: string;
   options: Option[];
+  urgent?: boolean; // 緊急性が高い質問（特別なUIで表示）
 };
 
 export type Option = {
@@ -33,6 +34,7 @@ export type ChatMessage = {
   type: "bot" | "user";
   text: string;
   timestamp: Date;
+  urgent?: boolean;
 };
 
 export type ChatState = {

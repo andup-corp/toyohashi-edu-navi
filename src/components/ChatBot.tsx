@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ChatMessage, ChatState, Option } from "@/types";
+import { ChatMessage, ChatState, Option, Question } from "@/types";
 import { getQuestionById } from "@/data/questions";
 import { processOption } from "@/lib/flowEngine";
 import Header from "./Header";
@@ -11,12 +11,13 @@ import ResultView from "./ResultView";
 
 const FIRST_QUESTION_ID = "q1";
 
-function createBotMessage(text: string): ChatMessage {
+function createBotMessage(text: string, urgent = false): ChatMessage {
   return {
     id: `bot-${Date.now()}-${Math.random()}`,
     type: "bot",
     text,
     timestamp: new Date(),
+    urgent,
   };
 }
 
@@ -33,7 +34,9 @@ const initialState = (): ChatState => {
   const firstQuestion = getQuestionById(FIRST_QUESTION_ID)!;
   return {
     messages: [
-      createBotMessage("こんにちは！豊橋市 教育相談ナビです。"),
+      createBotMessage(
+        "こんにちは！豊橋市 教育相談ナビです。\nいくつかの質問にお答えいただくと、お子さんの状況に合った相談先をご案内します。"
+      ),
       createBotMessage(firstQuestion.text),
     ],
     currentQuestionId: FIRST_QUESTION_ID,
@@ -99,7 +102,10 @@ export default function ChatBot() {
           currentQuestionId: null,
         }));
       } else if (result.nextQuestion) {
-        const nextMsg = createBotMessage(result.nextQuestion.text);
+        const nextMsg = createBotMessage(
+          result.nextQuestion.text,
+          result.nextQuestion.urgent
+        );
         setState((prev) => ({
           ...prev,
           messages: [...prev.messages, nextMsg],
